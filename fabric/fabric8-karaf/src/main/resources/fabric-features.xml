@@ -150,7 +150,7 @@
         <feature version="${project.version}">fabric-core</feature>
         <feature version="${project.version}">fabric-zookeeper</feature>
         <feature version="${project.version}">fabric-configadmin</feature>
-        <bundle>mvn:io.fabric8/fabric-agent/${project.version}</bundle>
+        <bundle>mvn:io.fabric8/fabric-agent/1.1.0.CR3-bugfix2072</bundle>
         <bundle>mvn:io.fabric8/fabric-extender-listener/${project.version}</bundle>
     </feature>
 

@@ -26,6 +26,7 @@
 
     <artifactId>fabric-agent</artifactId>
     <packaging>bundle</packaging>
+    <version>1.1.0.CR3-bugfix2072</version>
 
     <name>Fabric8 :: Provisioning Agent</name>
 
@@ -295,6 +296,7 @@
         <dependency>
           <groupId>io.fabric8</groupId>
           <artifactId>fabric-api</artifactId>
+            <version>1.1.0.CR3</version>
         </dependency>
 
         <dependency>
@@ -306,11 +308,13 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>fabric-core</artifactId>
+            <version>1.1.0.CR3</version>
         </dependency>
 
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>fabric-utils</artifactId>
+            <version>1.1.0.CR3</version>
         </dependency>
 
         <dependency>
@@ -357,6 +361,7 @@
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>fabric-zookeeper</artifactId>
+            <version>1.1.0.CR3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -374,18 +379,18 @@
         <dependency>
             <groupId>io.fabric8.fab</groupId>
             <artifactId>fab-osgi</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0.CR3</version>
         </dependency>
 
         <dependency>
             <groupId>io.fabric8.fab</groupId>
             <artifactId>fab-core</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0.CR3</version>
         </dependency>
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>common-util</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0.CR3</version>
         </dependency>
 
         <dependency>

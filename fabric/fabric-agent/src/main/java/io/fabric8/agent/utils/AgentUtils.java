@@ -129,12 +129,19 @@ public class AgentUtils {
         }
         Map<String,Parser> artifacts = new HashMap<String, Parser>();
         for (String location : locations) {
+            LOGGER.info("AGENTUTILS: LOCATIONS: "+location);
+            System.err.println("AGENTUTILS: LOCATIONS: "+location);
+            System.out.println("AGENTUTILS: LOCATIONS: "+location);
             try {
                 if (location.contains("$")) {
                     location = VersionPropertyPointerResolver.replaceVersions(fabricService, profile.getOverlay().getConfigurations(), location);
                 }
-                if (location.startsWith("mvn:") || location.contains(":mvn:")) {
+                if (location.startsWith("mvn:")) {
                     Parser parser = Parser.parsePathWithSchemePrefix(location);
+                    artifacts.put(location, parser);
+                } else if (location.contains(":mvn:")) {
+                    String path = location.substring(location.lastIndexOf(":mvn:")+1);
+                    Parser parser = Parser.parsePathWithSchemePrefix(path);
                     artifacts.put(location, parser);
                 } else {
                     if (nonMavenLocationCallback != null) {
