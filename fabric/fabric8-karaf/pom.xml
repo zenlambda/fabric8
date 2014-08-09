@@ -61,6 +61,21 @@
                 <type>zip</type>
             </dependency>
 
+            <dependency>
+                <groupId>io.fabric8.quickstarts</groupId>
+                <artifactId>fabric8-quickstarts-exclude-artifact-parent</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>io.fabric8.quickstarts</groupId>
+                <artifactId>fabric8-quickstarts-exclude-artifact-parent</artifactId>
+                <version>${project.version}</version>
+                <classifier>profile</classifier>
+                <type>zip</type>
+            </dependency>
+
             <!-- Gravia Dependencies -->
             <dependency>
                 <groupId>org.jboss.gravia</groupId>
@@ -547,7 +562,13 @@
                                   <property name="quickstart.src" value="${basedir}/../../quickstarts"/>
                                   <copy file="${quickstart.src}/target/profile.zip"
                                     tofile="target/features-repo/io/fabric8/quickstarts/fabric8-quickstarts-parent/${project.version}/fabric8-quickstarts-parent-${project.version}-profile.zip"/>
-                              </target>
+
+                                  <property name="quickstart.exclude.artifact.src" value="${basedir}/../../quickstarts-exclude-artifact"/>
+
+                                   <copy file="${quickstart.exclude.artifact.src}/target/profile.zip"
+                                         tofile="target/features-repo/io/fabric8/quickstarts/fabric8-quickstarts-parent/${project.version}/fabric8-quickstarts-exclude-artifact-parent-${project.version}-profile.zip"/>
+
+                               </target>
                            </configuration>
                        </execution>
                    </executions>
