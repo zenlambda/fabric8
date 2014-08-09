@@ -67,6 +67,6 @@
     </repositories>
 
     <modules>
-        <module>helloworld</module>
+        <module>mule-helloworld</module>
     </modules>
 </project>
