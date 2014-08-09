@@ -29,6 +29,7 @@
 	<artifactId>mule-helloworld</artifactId>
     <name>Fabric8 :: Quickstarts :: Mule :: HelloWorld</name>
 	<packaging>mule</packaging>
+    <description>A simple HTTP handler in Mule</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,7 +49,7 @@
 
         <!-- fabric8 deploy profile configuration -->
         <fabric8.profile>quickstarts-mule-helloworld</fabric8.profile>
-        <fabric8.parentProfiles>containers-mule</fabric8.parentProfiles>
+        <fabric8.parentProfiles>containers-mule.ce</fabric8.parentProfiles>
         <!-- we can define what the context path should be using a fixed name -->
         <fabric8.webContextPath>camel-servlet</fabric8.webContextPath>
 
