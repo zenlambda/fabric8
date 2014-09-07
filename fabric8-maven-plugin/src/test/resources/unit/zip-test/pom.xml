@@ -35,6 +35,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <project implementation="io.fabric8.maven.stubs.CreateProfileZipProjectStub"/>
                 </configuration>
             </plugin>
         </plugins>

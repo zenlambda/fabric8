@@ -8,7 +8,7 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
  * maven plugin test framework depends on eclipse aether, but we use
  * sonatype aether.
  */
-public class CreateProfileZipTest extends AbstractMojoTestCase {
+public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
     /** {@inheritDoc} */
     protected void setUp()
