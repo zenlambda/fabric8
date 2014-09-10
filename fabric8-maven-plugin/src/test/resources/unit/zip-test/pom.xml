@@ -15,10 +15,6 @@
         So in this case we want the bundle type to be 'zip' and not 'mule'.
     </description>
 
-    <properties>
-        <fabric8.artifactBundleType>zip</fabric8.artifactBundleType>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -35,8 +31,12 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <includeArtifact>true</includeArtifact>
                     <profileConfigDir>${basedir}/src/main/fabric8</profileConfigDir>
                     <project implementation="io.fabric8.maven.stubs.CreateProfileZipProjectStub"/>
+                    <outputFile>${basedir}/target/profile.zip</outputFile>
+                    <buildDir>${basedir}/target/generated-profiles</buildDir>
+                    <artifactBundleType>zip</artifactBundleType>
                 </configuration>
             </plugin>
         </plugins>

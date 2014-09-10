@@ -34,6 +34,7 @@ public class CreateProfileZipProjectStub extends MavenProjectStub {
         setName( model.getName() );
         setUrl( model.getUrl() );
         setPackaging( model.getPackaging() );
+        setArtifact(new CreateProfileArtifactStub(getGroupId(), getArtifactId(), getVersion(), getPackaging()));
 
         Build build = new Build();
         build.setFinalName( model.getArtifactId() );
