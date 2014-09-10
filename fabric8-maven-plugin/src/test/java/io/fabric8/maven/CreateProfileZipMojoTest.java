@@ -2,6 +2,11 @@ package io.fabric8.maven;
 
 
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.junit.Assert;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 /**
  * This test uses JUnit3 API because the Junit4 API for
@@ -36,13 +41,31 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
         System.out.println(getBasedir());
 
         String pom = "src/test/resources/unit/zip-test/pom.xml";
-        CreateProfileZipMojo myMojo = (CreateProfileZipMojo) lookupMojo( "zip", pom );
-        assertNotNull( myMojo );
-        try {
-            myMojo.execute();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+
+        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", pom );
+        assertNotNull( profileZipMojo );
+
+
+
+        setVariableValueToObject(profileZipMojo,"buildDir",new File(getBasedir() + "/target/generated-profiles"));
+
+        setVariableValueToObject(profileZipMojo,"outputFile",new File(getBasedir() + "/target/profile.zip"));
+
+        setVariableValueToObject(profileZipMojo, "artifactBundleType", "zip");
+
+        profileZipMojo.execute();
+
+        Properties props = new Properties();
+
+        props.load(new FileInputStream(getBasedir()+"/target/generated-profiles/io.fabric8.maven.test/zip/test.profile/io.fabric8.agent.properties"));
+
+        String value = props.getProperty("bundle.fab:mvn:io.fabric8.maven.test/zip-test/0.0.1-SNAPSHOT/zip");
+
+        System.out.println(props.keySet());
+
+        Assert.assertEquals("fab:mvn:io.fabric8.maven.test/zip-test/0.0.1-SNAPSHOT/zip",value);
+
+
         System.out.println("***************GOODBYE MAVEN WORLD!****************");
     }
 
