@@ -33,13 +33,16 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
             throws Exception
     {
         System.out.println("***************HELLO MAVEN WORLD!******************");
+        System.out.println(getBasedir());
+
         String pom = "src/test/resources/unit/zip-test/pom.xml";
-
-
         CreateProfileZipMojo myMojo = (CreateProfileZipMojo) lookupMojo( "zip", pom );
         assertNotNull( myMojo );
-
-        myMojo.execute();
+        try {
+            myMojo.execute();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("***************GOODBYE MAVEN WORLD!****************");
     }
 
