@@ -34,9 +34,6 @@
                     <includeArtifact>true</includeArtifact>
                     <profileConfigDir>${basedir}/src/main/fabric8</profileConfigDir>
                     <project implementation="io.fabric8.maven.stubs.CreateProfileZipProjectStub"/>
-                    <outputFile>${basedir}/target/profile.zip</outputFile>
-                    <buildDir>${basedir}/target/generated-profiles</buildDir>
-                    <artifactBundleType>zip</artifactBundleType>
                 </configuration>
             </plugin>
         </plugins>
