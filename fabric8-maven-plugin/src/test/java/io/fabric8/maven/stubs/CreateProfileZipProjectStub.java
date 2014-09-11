@@ -11,11 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateProfileZipProjectStub extends MavenProjectStub {
-    /**
-     * Default constructor
-     */
-    public CreateProfileZipProjectStub()
-    {
+
+    public CreateProfileZipProjectStub() {
         MavenXpp3Reader pomReader = new MavenXpp3Reader();
         Model model;
         File pomFile = new File(getBasedir(), "pom.xml");
@@ -57,7 +54,6 @@ public class CreateProfileZipProjectStub extends MavenProjectStub {
         setTestCompileSourceRoots( testCompileSourceRoots );
     }
 
-    /** {@inheritDoc} */
     public File getBasedir()
     {
         return new File( super.getBasedir() + "/src/test/resources/unit/zip-test/" );
