@@ -44,11 +44,11 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
         // THEN
 
-        bundleRerferencesHaveZipExtension();
+        bundleReferencesHaveZipExtension();
 
     }
 
-    private void bundleRerferencesHaveZipExtension() throws IOException {
+    private void bundleReferencesHaveZipExtension() throws IOException {
         Properties props = loadProperties(getFabricAgentPropertiesFile(getGeneratedProfilesDir()));
 
         String value = props.getProperty(getArtifactBundleKey("zip"));
