@@ -28,6 +28,25 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
         super.tearDown();
     }
 
+    public void testOverrideClassifier() throws Exception {
+
+        // GIVEN
+
+        pomWithJarPackaging();
+
+        CreateProfileZipMojo mojo = createProfileZipMojoWithBasicConfig();
+
+        // WHEN
+
+        artifactBundleClassifierIsOverridden(mojo);
+
+        mojo.execute();
+
+        // THEN
+
+        bundleReferencesHaveJarWithFooClassifier();
+    }
+
     public void testOverrideType() throws Exception {
 
         // GIVEN
@@ -67,17 +86,25 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
     private void bundleReferencesHaveJarExtension() throws IOException {
         Properties props = loadProperties(getFabricAgentPropertiesFile(getGeneratedProfilesDir()));
 
-        String value = props.getProperty(getArtifactBundleKey("jar"));
+        assertPropertiesKeyExists(props, getArtifactBundleKey("jar"));
+        assertPropertyValue(props, getArtifactBundleKey("jar"),
+                getExpectedArtifactBundleValue("jar"));
+    }
 
-        Assert.assertEquals(getExpectedArtifactBundleValue("jar"), value);
+    private void bundleReferencesHaveJarWithFooClassifier() throws IOException {
+        Properties props = loadProperties(getFabricAgentPropertiesFile(getGeneratedProfilesDir()));
+
+        assertPropertiesKeyExists(props, getArtifactBundleKey("jar/foo"));
+        assertPropertyValue(props, getArtifactBundleKey("jar/foo"),
+                getExpectedArtifactBundleValue("jar/foo"));
     }
 
     private void bundleReferencesHaveZipExtension() throws IOException {
         Properties props = loadProperties(getFabricAgentPropertiesFile(getGeneratedProfilesDir()));
 
-        String value = props.getProperty(getArtifactBundleKey("zip"));
-
-        Assert.assertEquals(getExpectedArtifactBundleValue("zip"), value);
+        assertPropertiesKeyExists(props, getArtifactBundleKey("zip"));
+        assertPropertyValue(props, getArtifactBundleKey("zip"),
+                getExpectedArtifactBundleValue("zip"));
     }
 
     private CreateProfileZipMojo createProfileZipMojoWithBasicConfig() throws Exception {
@@ -96,6 +123,10 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
         setVariableValueToObject(mojo, "artifactBundleType", "zip");
     }
 
+    private void artifactBundleClassifierIsOverridden(CreateProfileZipMojo mojo) throws IllegalAccessException {
+        setVariableValueToObject(mojo, "artifactBundleClassifier", "foo");
+    }
+
     private void pomWithJarPackaging() {
         Assert.assertEquals("jar", getPackaging());
 
@@ -103,6 +134,14 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
     }
 
     // helpers...
+
+    private void assertPropertyValue(Properties props, String key, String expectedArtifactBundleValue) {
+        Assert.assertEquals(expectedArtifactBundleValue, props.getProperty(key));
+    }
+
+    private void assertPropertiesKeyExists(Properties props, String key) {
+        Assert.assertNotNull("No value for key " + key + ". Available keys: " + props.keySet(), props.getProperty(key));
+    }
 
     private File getProfileZip() {
         return new File(getBasedir() + "/target/profile.zip");
