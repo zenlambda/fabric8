@@ -191,6 +191,9 @@ public abstract class AbstractProfileMojo extends AbstractMojo {
     private String artifactBundleType;
 
 
+    /**
+     * Classifier to use for the project artifact bundle reference
+     */
     @Parameter(property = "fabric8.artifactBundleClassifier")
     private String artifactBundleClassifier;
 
