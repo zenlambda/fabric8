@@ -88,29 +88,23 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
     public void testDefaultType() throws Exception {
 
-        String bundleSpec = getBundleSpec("jar");
-        String artifactBundleKey = getArtifactBundleKey("jar");
-        String expectedArtifactBundleValue = getExpectedArtifactBundleValue("jar");
-        File generatedProfiles = getGeneratedProfilesDir();
-        File fabricAgentPropertiesFile = getFabricAgentPropertiesFile(generatedProfiles);
-
         Assert.assertEquals("jar",projectStub.getPackaging());
 
         CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", getPom());
 
         assertNotNull( profileZipMojo );
 
-        setVariableValueToObject(profileZipMojo,"buildDir", generatedProfiles);
+        setVariableValueToObject(profileZipMojo,"buildDir", getGeneratedProfilesDir());
 
         setVariableValueToObject(profileZipMojo,"outputFile", getProfileZip());
 
         profileZipMojo.execute();
 
-        Properties props = loadProperties(fabricAgentPropertiesFile);
+        Properties props = loadProperties(getFabricAgentPropertiesFile(getGeneratedProfilesDir()));
 
-        String value = props.getProperty(artifactBundleKey);
+        String value = props.getProperty(getArtifactBundleKey("jar"));
 
-        Assert.assertEquals(expectedArtifactBundleValue,value);
+        Assert.assertEquals(getExpectedArtifactBundleValue("jar"),value);
 
     }
 
