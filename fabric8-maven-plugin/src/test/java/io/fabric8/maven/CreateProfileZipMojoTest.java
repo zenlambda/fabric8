@@ -1,7 +1,10 @@
 package io.fabric8.maven;
 
 
+import io.fabric8.maven.stubs.CreateProfileZipProjectStub;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.project.MavenProject;
 import org.junit.Assert;
 
 import java.io.File;
@@ -40,12 +43,13 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
         System.out.println("***************HELLO MAVEN WORLD!******************");
         System.out.println(getBasedir());
 
-        String pom = "src/test/resources/unit/zip-test/pom.xml";
+        CreateProfileZipProjectStub projectStub = new CreateProfileZipProjectStub();
+
+        String pom = projectStub.getFile().toString();
 
         CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", pom );
+
         assertNotNull( profileZipMojo );
-
-
 
         setVariableValueToObject(profileZipMojo,"buildDir",new File(getBasedir() + "/target/generated-profiles"));
 

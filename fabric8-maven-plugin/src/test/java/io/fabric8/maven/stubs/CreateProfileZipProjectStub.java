@@ -18,9 +18,11 @@ public class CreateProfileZipProjectStub extends MavenProjectStub {
     {
         MavenXpp3Reader pomReader = new MavenXpp3Reader();
         Model model;
+        File pomFile = new File(getBasedir(), "pom.xml");
         try
         {
-            model = pomReader.read( ReaderFactory.newXmlReader(new File(getBasedir(), "pom.xml")) );
+
+            model = pomReader.read( ReaderFactory.newXmlReader(pomFile) );
             setModel( model );
         }
         catch ( Exception e )
@@ -35,6 +37,7 @@ public class CreateProfileZipProjectStub extends MavenProjectStub {
         setUrl( model.getUrl() );
         setPackaging( model.getPackaging() );
         setArtifact(new CreateProfileArtifactStub(getGroupId(), getArtifactId(), getVersion(), getPackaging()));
+        setFile(pomFile);
 
         Build build = new Build();
         build.setFinalName( model.getArtifactId() );
