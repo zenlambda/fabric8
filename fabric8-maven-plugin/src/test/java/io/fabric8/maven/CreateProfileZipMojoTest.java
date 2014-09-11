@@ -34,7 +34,7 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
         String artifactId = projectStub.getArtifactId();
         String version = projectStub.getVersion();
         String pom = projectStub.getFile().toString();
-        // looks like: io.fabric8.maven.test/zip/test.profile
+        // profilePathComponent: looks like: io.fabric8.maven.test/zip/test.profile
         String profilePathComponent = groupId + "/" +
                 artifactId.replace('-', '/') + ".profile";
         String bundleSpec = groupId + "/" + artifactId + "/" + version + "/zip";
