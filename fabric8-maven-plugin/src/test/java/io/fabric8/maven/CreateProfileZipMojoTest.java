@@ -75,7 +75,9 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
         String value = props.getProperty(artifactBundleKey);
 
-        Assert.assertEquals("fab:mvn:io.fabric8.maven.test/zip-test/0.0.1-SNAPSHOT/zip",value);
+        String expectedValue = "fab:mvn:" + projectStub.getGroupId() +"/" + projectStub.getArtifactId() + "/" + projectStub.getVersion() + "/zip";
+
+        Assert.assertEquals(expectedValue,value);
 
     }
 
