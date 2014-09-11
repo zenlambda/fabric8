@@ -40,8 +40,6 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
     public void testSomething()
             throws Exception
     {
-        System.out.println("***************HELLO MAVEN WORLD!******************");
-        System.out.println(getBasedir());
 
         CreateProfileZipProjectStub projectStub = new CreateProfileZipProjectStub();
 
@@ -74,12 +72,8 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
         String value = props.getProperty("bundle.fab:mvn:io.fabric8.maven.test/zip-test/0.0.1-SNAPSHOT/zip");
 
-        System.out.println(props.keySet());
-
         Assert.assertEquals("fab:mvn:io.fabric8.maven.test/zip-test/0.0.1-SNAPSHOT/zip",value);
 
-
-        System.out.println("***************GOODBYE MAVEN WORLD!****************");
     }
 
 }
