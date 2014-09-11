@@ -27,7 +27,7 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
         super.tearDown();
     }
 
-    public void testSomething() throws Exception {
+    public void testOverrideType() throws Exception {
 
         CreateProfileZipProjectStub projectStub = new CreateProfileZipProjectStub();
         String groupId = projectStub.getGroupId();
