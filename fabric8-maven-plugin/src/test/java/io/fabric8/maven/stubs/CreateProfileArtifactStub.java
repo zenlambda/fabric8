@@ -32,6 +32,7 @@ public class CreateProfileArtifactStub
         this.artifactId = artifactId;
         this.version = version;
         this.packaging = packaging;
+        setType(packaging);
         versionRange = VersionRange.createFromVersion( version );
     }
 
