@@ -3,8 +3,6 @@ package io.fabric8.maven;
 
 import io.fabric8.maven.stubs.CreateProfileZipProjectStub;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.project.MavenProject;
 import org.junit.Assert;
 
 import java.io.File;
@@ -19,8 +17,11 @@ import java.util.Properties;
  */
 public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
+    private CreateProfileZipProjectStub projectStub;
+
     protected void setUp() throws Exception {
         super.setUp();
+        projectStub = new CreateProfileZipProjectStub();
     }
 
     protected void tearDown() throws Exception {
@@ -29,32 +30,79 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
     public void testOverrideType() throws Exception {
 
-        CreateProfileZipProjectStub projectStub = new CreateProfileZipProjectStub();
-        String groupId = projectStub.getGroupId();
-        String artifactId = projectStub.getArtifactId();
-        String version = projectStub.getVersion();
-        String pom = projectStub.getFile().toString();
-        // profilePathComponent: looks like: io.fabric8.maven.test/zip/test.profile
-        String profilePathComponent = groupId + "/" +
-                artifactId.replace('-', '/') + ".profile";
-        String bundleSpec = groupId + "/" + artifactId + "/" + version + "/zip";
-        String artifactBundleKey = "bundle.fab:mvn:" + bundleSpec;
-        String expectedArtifactBundleValue = "fab:mvn:" + bundleSpec;
-        File generatedProfiles = new File(getBasedir() + "/target/generated-profiles");
-        File fabricAgentPropertiesFile = new File(generatedProfiles, profilePathComponent +
-                "/io.fabric8.agent.properties");
+        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", getPom());
 
-        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", pom );
+        assertNotNull( profileZipMojo );
+
+        setVariableValueToObject(profileZipMojo,"buildDir", getGeneratedProfilesDir());
+
+        File profileZip = getProfileZip();
+
+        setVariableValueToObject(profileZipMojo,"outputFile", profileZip);
+
+        setVariableValueToObject(profileZipMojo, "artifactBundleType", "zip");
+
+        profileZipMojo.execute();
+
+        Properties props = loadProperties(getFabricAgentPropertiesFile(getGeneratedProfilesDir()));
+
+        String value = props.getProperty(getArtifactBundleKey("zip"));
+
+        Assert.assertEquals(getExpectedArtifactBundleValue("zip"),value);
+
+    }
+
+    private File getProfileZip() {
+        return new File(getBasedir() + "/target/profile.zip");
+    }
+
+    private File getGeneratedProfilesDir() {
+        return new File(getBasedir() + "/target/generated-profiles");
+    }
+
+    private String getExpectedArtifactBundleValue(String type) {
+        return "fab:mvn:" + getBundleSpec(type);
+    }
+
+    private String getArtifactBundleKey(String type) {
+        return "bundle.fab:mvn:" + getBundleSpec(type);
+    }
+
+    private String getBundleSpec(String type) {
+        return getGroupId() + "/" + getArtifactId() + "/" + getVersion() + "/" +type;
+    }
+
+    private String getProfilePathComponent() {
+        // profilePathComponent: looks like: io.fabric8.maven.test/zip/test.profile
+        return getGroupId() + "/" +
+                getArtifactId().replace('-', '/') + ".profile";
+    }
+
+    private String getVersion() {
+        return projectStub.getVersion();
+    }
+
+    private String getGroupId() {
+        return projectStub.getGroupId();
+    }
+
+    public void testDefaultType() throws Exception {
+
+        String bundleSpec = getBundleSpec("jar");
+        String artifactBundleKey = getArtifactBundleKey("jar");
+        String expectedArtifactBundleValue = getExpectedArtifactBundleValue("jar");
+        File generatedProfiles = getGeneratedProfilesDir();
+        File fabricAgentPropertiesFile = getFabricAgentPropertiesFile(generatedProfiles);
+
+        Assert.assertEquals("jar",projectStub.getPackaging());
+
+        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", getPom());
 
         assertNotNull( profileZipMojo );
 
         setVariableValueToObject(profileZipMojo,"buildDir", generatedProfiles);
 
-        File profileZip = new File(getBasedir() + "/target/profile.zip");
-
-        setVariableValueToObject(profileZipMojo,"outputFile", profileZip);
-
-        setVariableValueToObject(profileZipMojo, "artifactBundleType", "zip");
+        setVariableValueToObject(profileZipMojo,"outputFile", getProfileZip());
 
         profileZipMojo.execute();
 
@@ -66,45 +114,17 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
     }
 
-    public void testDefaultType() throws Exception {
-
-        CreateProfileZipProjectStub projectStub = new CreateProfileZipProjectStub();
-        String groupId = projectStub.getGroupId();
-        String artifactId = projectStub.getArtifactId();
-        String version = projectStub.getVersion();
-        String pom = projectStub.getFile().toString();
-        // profilePathComponent: looks like: io.fabric8.maven.test/zip/test.profile
-        String profilePathComponent = groupId + "/" +
-                artifactId.replace('-', '/') + ".profile";
-        String bundleSpec = groupId + "/" + artifactId + "/" + version + "/jar";
-        String artifactBundleKey = "bundle.fab:mvn:" + bundleSpec;
-        String expectedArtifactBundleValue = "fab:mvn:" + bundleSpec;
-        File generatedProfiles = new File(getBasedir() + "/target/generated-profiles");
-        File fabricAgentPropertiesFile = new File(generatedProfiles, profilePathComponent +
+    private File getFabricAgentPropertiesFile(File generatedProfiles) {
+        return new File(generatedProfiles, getProfilePathComponent() +
                 "/io.fabric8.agent.properties");
+    }
 
-        Assert.assertEquals("jar",projectStub.getPackaging());
+    private String getPom() {
+        return projectStub.getFile().toString();
+    }
 
-        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", pom );
-
-        assertNotNull( profileZipMojo );
-
-        setVariableValueToObject(profileZipMojo,"buildDir", generatedProfiles);
-
-        File profileZip = new File(getBasedir() + "/target/profile.zip");
-
-        setVariableValueToObject(profileZipMojo,"outputFile", profileZip);
-
-//        setVariableValueToObject(profileZipMojo, "artifactBundleType", "zip");
-
-        profileZipMojo.execute();
-
-        Properties props = loadProperties(fabricAgentPropertiesFile);
-
-        String value = props.getProperty(artifactBundleKey);
-
-        Assert.assertEquals(expectedArtifactBundleValue,value);
-
+    private String getArtifactId() {
+        return projectStub.getArtifactId();
     }
 
     private Properties loadProperties(File fabricAgentPropertiesFile) throws IOException {
