@@ -65,7 +65,10 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
         Properties props = new Properties();
 
-        props.load(new FileInputStream(getBasedir()+"/target/generated-profiles/io.fabric8.maven.test/zip/test.profile/io.fabric8.agent.properties"));
+        String profilePathComponent = "/" + projectStub.getArtifactId().replace('-','/') + ".profile";
+
+        props.load(new FileInputStream(new File(generatedProfiles, projectStub.getGroupId() +
+                profilePathComponent + "/io.fabric8.agent.properties")));
 
         String value = props.getProperty("bundle.fab:mvn:io.fabric8.maven.test/zip-test/0.0.1-SNAPSHOT/zip");
 
