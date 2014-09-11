@@ -66,6 +66,47 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
     }
 
+    public void testDefaultType() throws Exception {
+
+        CreateProfileZipProjectStub projectStub = new CreateProfileZipProjectStub();
+        String groupId = projectStub.getGroupId();
+        String artifactId = projectStub.getArtifactId();
+        String version = projectStub.getVersion();
+        String pom = projectStub.getFile().toString();
+        // profilePathComponent: looks like: io.fabric8.maven.test/zip/test.profile
+        String profilePathComponent = groupId + "/" +
+                artifactId.replace('-', '/') + ".profile";
+        String bundleSpec = groupId + "/" + artifactId + "/" + version + "/jar";
+        String artifactBundleKey = "bundle.fab:mvn:" + bundleSpec;
+        String expectedArtifactBundleValue = "fab:mvn:" + bundleSpec;
+        File generatedProfiles = new File(getBasedir() + "/target/generated-profiles");
+        File fabricAgentPropertiesFile = new File(generatedProfiles, profilePathComponent +
+                "/io.fabric8.agent.properties");
+
+        Assert.assertEquals("jar",projectStub.getPackaging());
+
+        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", pom );
+
+        assertNotNull( profileZipMojo );
+
+        setVariableValueToObject(profileZipMojo,"buildDir", generatedProfiles);
+
+        File profileZip = new File(getBasedir() + "/target/profile.zip");
+
+        setVariableValueToObject(profileZipMojo,"outputFile", profileZip);
+
+//        setVariableValueToObject(profileZipMojo, "artifactBundleType", "zip");
+
+        profileZipMojo.execute();
+
+        Properties props = loadProperties(fabricAgentPropertiesFile);
+
+        String value = props.getProperty(artifactBundleKey);
+
+        Assert.assertEquals(expectedArtifactBundleValue,value);
+
+    }
+
     private Properties loadProperties(File fabricAgentPropertiesFile) throws IOException {
         Properties props = new Properties();
         props.load(new FileInputStream(fabricAgentPropertiesFile));
