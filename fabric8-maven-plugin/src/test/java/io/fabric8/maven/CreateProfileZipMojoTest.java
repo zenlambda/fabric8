@@ -30,26 +30,40 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
     public void testOverrideType() throws Exception {
 
-        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", getPom());
+        // GIVEN
 
-        assertNotNull( profileZipMojo );
+        pomWithJarPackaging();
 
-        setVariableValueToObject(profileZipMojo,"buildDir", getGeneratedProfilesDir());
+        CreateProfileZipMojo mojo = createProfileZipMojoWithBasicConfig();
 
-        File profileZip = getProfileZip();
+        // WHEN
 
-        setVariableValueToObject(profileZipMojo,"outputFile", profileZip);
+        artifactBundleTypeIsOverridden(mojo);
 
-        setVariableValueToObject(profileZipMojo, "artifactBundleType", "zip");
+        mojo.execute();
 
-        profileZipMojo.execute();
+        // THEN
 
+        bundleRerferencesHaveZipExtension();
+
+    }
+
+    private void bundleRerferencesHaveZipExtension() throws IOException {
         Properties props = loadProperties(getFabricAgentPropertiesFile(getGeneratedProfilesDir()));
 
         String value = props.getProperty(getArtifactBundleKey("zip"));
 
-        Assert.assertEquals(getExpectedArtifactBundleValue("zip"),value);
+        Assert.assertEquals(getExpectedArtifactBundleValue("zip"), value);
+    }
 
+    private void artifactBundleTypeIsOverridden(CreateProfileZipMojo mojo) throws IllegalAccessException {
+        setVariableValueToObject(mojo, "artifactBundleType", "zip");
+    }
+
+    private void pomWithJarPackaging() {
+        Assert.assertEquals("jar", getPackaging());
+
+        Assert.assertEquals("jar", getArtifactType());
     }
 
     private File getProfileZip() {
@@ -88,24 +102,45 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
     public void testDefaultType() throws Exception {
 
-        Assert.assertEquals("jar",projectStub.getPackaging());
+        // GIVEN
 
-        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", getPom());
+        pomWithJarPackaging();
 
-        assertNotNull( profileZipMojo );
+        // WHEN
 
-        setVariableValueToObject(profileZipMojo,"buildDir", getGeneratedProfilesDir());
+        createProfileZipMojoWithBasicConfig().execute();
 
-        setVariableValueToObject(profileZipMojo,"outputFile", getProfileZip());
+        // THEN
 
-        profileZipMojo.execute();
+        bundleReferencesHaveJarExtension();
 
+    }
+
+    private void bundleReferencesHaveJarExtension() throws IOException {
         Properties props = loadProperties(getFabricAgentPropertiesFile(getGeneratedProfilesDir()));
 
         String value = props.getProperty(getArtifactBundleKey("jar"));
 
-        Assert.assertEquals(getExpectedArtifactBundleValue("jar"),value);
+        Assert.assertEquals(getExpectedArtifactBundleValue("jar"), value);
+    }
 
+    private CreateProfileZipMojo createProfileZipMojoWithBasicConfig() throws Exception {
+        CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", getPom());
+
+        assertNotNull(profileZipMojo);
+
+        setVariableValueToObject(profileZipMojo,"buildDir", getGeneratedProfilesDir());
+
+        setVariableValueToObject(profileZipMojo,"outputFile", getProfileZip());
+        return profileZipMojo;
+    }
+
+    private String getArtifactType() {
+        return projectStub.getArtifact().getType();
+    }
+
+    private String getPackaging() {
+        return projectStub.getPackaging();
     }
 
     private File getFabricAgentPropertiesFile(File generatedProfiles) {
