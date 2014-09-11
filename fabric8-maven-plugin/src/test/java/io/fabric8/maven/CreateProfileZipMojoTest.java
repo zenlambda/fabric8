@@ -9,6 +9,7 @@ import org.junit.Assert;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -18,38 +19,34 @@ import java.util.Properties;
  */
 public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
-    /** {@inheritDoc} */
-    protected void setUp()
-            throws Exception
-    {
-        // required
+    protected void setUp() throws Exception {
         super.setUp();
-
     }
 
-    /** {@inheritDoc} */
-    protected void tearDown()
-            throws Exception
-    {
-        // required
+    protected void tearDown() throws Exception {
         super.tearDown();
-
     }
 
-
-    public void testSomething()
-            throws Exception
-    {
+    public void testSomething() throws Exception {
 
         CreateProfileZipProjectStub projectStub = new CreateProfileZipProjectStub();
-
+        String groupId = projectStub.getGroupId();
+        String artifactId = projectStub.getArtifactId();
+        String version = projectStub.getVersion();
         String pom = projectStub.getFile().toString();
+        // looks like: io.fabric8.maven.test/zip/test.profile
+        String profilePathComponent = groupId + "/" +
+                artifactId.replace('-', '/') + ".profile";
+        String bundleSpec = groupId + "/" + artifactId + "/" + version + "/zip";
+        String artifactBundleKey = "bundle.fab:mvn:" + bundleSpec;
+        String expectedArtifactBundleValue = "fab:mvn:" + bundleSpec;
+        File generatedProfiles = new File(getBasedir() + "/target/generated-profiles");
+        File fabricAgentPropertiesFile = new File(generatedProfiles, profilePathComponent +
+                "/io.fabric8.agent.properties");
 
         CreateProfileZipMojo profileZipMojo = (CreateProfileZipMojo) lookupMojo( "zip", pom );
 
         assertNotNull( profileZipMojo );
-
-        File generatedProfiles = new File(getBasedir() + "/target/generated-profiles");
 
         setVariableValueToObject(profileZipMojo,"buildDir", generatedProfiles);
 
@@ -61,24 +58,18 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
         profileZipMojo.execute();
 
-        Properties props = new Properties();
-
-        // looks like: io.fabric8.maven.test/zip/test.profile
-        String profilePathComponent = projectStub.getGroupId() + "/" +
-                projectStub.getArtifactId().replace('-','/') + ".profile";
-
-        props.load(new FileInputStream(new File(generatedProfiles, profilePathComponent +
-                "/io.fabric8.agent.properties")));
-
-        String artifactBundleKey = "bundle.fab:mvn:" + projectStub.getGroupId() + "/" +
-                projectStub.getArtifactId() + "/" + projectStub.getVersion() + "/zip";
+        Properties props = loadProperties(fabricAgentPropertiesFile);
 
         String value = props.getProperty(artifactBundleKey);
 
-        String expectedValue = "fab:mvn:" + projectStub.getGroupId() +"/" + projectStub.getArtifactId() + "/" + projectStub.getVersion() + "/zip";
+        Assert.assertEquals(expectedArtifactBundleValue,value);
 
-        Assert.assertEquals(expectedValue,value);
+    }
 
+    private Properties loadProperties(File fabricAgentPropertiesFile) throws IOException {
+        Properties props = new Properties();
+        props.load(new FileInputStream(fabricAgentPropertiesFile));
+        return props;
     }
 
 }
