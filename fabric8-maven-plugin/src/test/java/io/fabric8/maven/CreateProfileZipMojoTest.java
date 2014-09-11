@@ -53,7 +53,11 @@ public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
         File generatedProfiles = new File(getBasedir() + "/target/generated-profiles");
 
-        setVariableValueToObject(profileZipMojo,"outputFile",new File(getBasedir() + "/target/profile.zip"));
+        setVariableValueToObject(profileZipMojo,"buildDir", generatedProfiles);
+
+        File profileZip = new File(getBasedir() + "/target/profile.zip");
+
+        setVariableValueToObject(profileZipMojo,"outputFile", profileZip);
 
         setVariableValueToObject(profileZipMojo, "artifactBundleType", "zip");
 
