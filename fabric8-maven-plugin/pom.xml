@@ -31,11 +31,36 @@
   <packaging>maven-plugin</packaging>
 
   <dependencies>
+
+      <dependency>
+          <groupId>org.apache.maven.plugin-testing</groupId>
+          <artifactId>maven-plugin-testing-harness</artifactId>
+          <version>3.1.0</version>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.sonatype.sisu</groupId>
+          <artifactId>sisu-guice</artifactId>
+          <version>3.1.10</version>
+          <scope>test</scope>
+          <!-- we need to set the latest minor version of -->
+          <!-- sisu-guice otherwise it will try to -->
+          <!-- call a protected method in guava MapMaker -->
+      </dependency>
+
+      <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-aether-provider</artifactId>
+          <version>3.1.1</version>
+          <scope>test</scope>
+      </dependency>
+
       <dependency>
           <groupId>org.apache.maven</groupId>
           <artifactId>maven-core</artifactId>
           <!-- maven-plugin-testing-harness only works with this version of maven -->
-          <version>3.0.5</version>
+          <version>3.1.1</version>
       </dependency>
       <!--
       <dependency>
@@ -133,22 +158,22 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.0.4</version>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
-      <version>3.0.4</version>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
-      <version>3.0.4</version>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
-      <version>3.0.4</version>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
@@ -186,22 +211,12 @@
 
     <!-- Testing -->
 
-
-
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.maven.plugin-testing</groupId>
-      <artifactId>maven-plugin-testing-harness</artifactId>
-      <!-- We seem to have sonatype - not eclipse - aether -->
-      <!-- on the classpath. So the max version we can use is 2.1 -->
-      <version>2.1</version>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
 
