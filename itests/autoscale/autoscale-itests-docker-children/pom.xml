@@ -62,7 +62,7 @@
     <dependency>
       <groupId>org.jboss.arquillian.testenricher</groupId>
       <artifactId>arquillian-testenricher-cdi</artifactId>
-      <version>${arquillian-core-version}</version>
+      <version>${arquillian-version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
