@@ -55,6 +55,11 @@
     <fabric8.parentProfiles>containers-mule.ce</fabric8.parentProfiles>
     <!-- we can define what the context path should be using a fixed name -->
     <fabric8.webContextPath>helloworld</fabric8.webContextPath>
+
+    <!-- fabric8 will by default use the packaging type as the archive extension spec -->
+    <!-- for the bundle. This means it will specify an archive 'mule-helloworld.mule' to -->
+    <!-- the resolver, which is wrong. So the default type must be overridden so that -->
+    <!-- resolver looks for mule-helloworld.zip instead! -->
     <fabric8.artifactBundleType>zip</fabric8.artifactBundleType>
 
   </properties>
