@@ -55,11 +55,8 @@
     <fabric8.parentProfiles>containers-mule.ce</fabric8.parentProfiles>
     <!-- we can define what the context path should be using a fixed name -->
     <fabric8.webContextPath>helloworld</fabric8.webContextPath>
+    <fabric8.artifactBundleType>zip</fabric8.artifactBundleType>
 
-    <!-- fabric8 will using the packing type 'mule' as the extentions spec -->
-    <!-- for the bundle, which is wrong, so the default must be override -->
-    <!-- (see fabric8 plugin config, in this module) -->
-    <fabric8.includeArtifact>false</fabric8.includeArtifact>
   </properties>
 
   <dependencyManagement>
@@ -269,13 +266,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <includeArtifact>${fabric8.includeArtifact}</includeArtifact>
-          <!-- override the default bundle spec, with the correct one -->
-          <bundles>
-            file:mvn:${project.groupId}/${project.artifactId}/${project.version}/zip
-          </bundles>
-        </configuration>
       </plugin>
 
     </plugins>
