@@ -16,10 +16,10 @@
 package io.fabric8.maven;
 
 
+import io.fabric8.maven.stubs.AbstractProjectStub;
 import io.fabric8.maven.stubs.CreateProfileZipBundleProjectStub;
 import io.fabric8.maven.stubs.CreateProfileZipJarProjectStub;
 import io.fabric8.maven.stubs.CreateProfileZipMuleProjectStub;
-import io.fabric8.maven.stubs.CreateProfileZipProjectStub;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
@@ -37,7 +37,7 @@ import java.util.Properties;
  */
 public class CreateProfileZipMojoTest extends AbstractMojoTestCase {
 
-    private CreateProfileZipProjectStub projectStub;
+    private AbstractProjectStub projectStub;
 
     public static final String EXPECTED_EXCEPTION_MESSAGE =
             "The property artifactBundleClassifier " +
