@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.fabric8.container.process.JolokiaAgentHelper.substituteVariableExpression;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class JolokiaAgentHelperSubstituteTest {
 
@@ -96,6 +97,32 @@ public class JolokiaAgentHelperSubstituteTest {
         for (String expression : expressions) {
             assertExpression(expression, expression, true);
         }
+    }
+
+    @Test
+    public void testNestedSubstitution() throws Exception {
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+
+        when(dataBuilder.forPath("/fabric/registry/clusters/foo/myfoo/master"))
+                .thenReturn("foo0".getBytes());
+        when(dataBuilder.forPath("/fabric/registry/containers/foo0/config/ip"))
+                .thenReturn("127.0.0.1".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${zk:/fabric/registry/containers/" +
+                "${zk:/fabric/registry/clusters/foo/myfoo/master}" +
+                "/config/ip}", "127.0.0.1");
+
+    }
+
+    @Test
+    public void testGroovySubstitution() {
+        curator = new MockCuratorFramework();
+//        assertExpression("${groovy:([1,2,3,4])}","[1, 2, 3, 4]",false);
+        assertExpression("${groovy:([1,2,3,4].findAll { it % 2 == 0 \\})}","[2, 4]",false);
+//        assertExpression("${groovy:([1,2,3,4].findAll { it % 2 == 0 })}","[2, 4]",false);
+
     }
 
     @Test
