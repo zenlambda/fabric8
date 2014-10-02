@@ -100,7 +100,7 @@ public class JolokiaAgentHelperSubstituteTest {
     }
 
     @Test
-    public void testNestedSubstitution() throws Exception {
+    public void testInnocentNestedSubstitution() throws Exception {
         curator = mock(CuratorFramework.class);
         GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
 
@@ -117,11 +117,109 @@ public class JolokiaAgentHelperSubstituteTest {
     }
 
     @Test
+    public void testEvilNestedZKSubsitution() throws Exception {
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+
+        when(dataBuilder.forPath("/fabric/registry/clusters/foo/myfoo/master"))
+                .thenReturn("}PICKLE".getBytes()); // evil bit... well bytes really...
+        when(dataBuilder.forPath("/fabric/registry/containers/}PICKLE/config/ip"))
+                .thenReturn("127.0.0.1".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${zk:/fabric/registry/containers/" +
+                "${zk:/fabric/registry/clusters/foo/myfoo/master}" +
+                "/config/ip}", "127.0.0.1");
+    }
+
+    @Test
+    public void testGroovySubstitutionNestedInsideZKSubstitution() throws Exception {
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+        when(dataBuilder.forPath("/fabric/registry/containers/config/cheese/ip"))
+                .thenReturn("127.0.0.1".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${zk:/fabric/registry/containers/config/" +
+                "${groovy:'CHEESE'.toLowerCase()}/ip}", "127.0.0.1");
+
+    }
+
+    @Test
+    public void testGroovySubstitutionWithUnmatchedOpenBraceNestedInsideZKSubstitution() throws Exception {
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+        when(dataBuilder.forPath("/fabric/registry/containers/config/cheese/ip"))
+                .thenReturn("127.0.0.1".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${zk:/fabric/registry/containers/config/" +
+                "${groovy:'{cheese'.substring(1)}/ip}", "127.0.0.1");
+
+    }
+
+    @Test
+    public void testGroovySubstitutionWithUnmatchedCloseBraceNestedInsideZKSubstitution() throws Exception {
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+        when(dataBuilder.forPath("/fabric/registry/containers/config/pickle/ip"))
+                .thenReturn("127.0.0.1".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${zk:/fabric/registry/containers/config/" +
+                "${groovy:'}pickle'.substring(1)}/ip}", "127.0.0.1");
+
+    }
+
+    @Test
+    public void testGroovySubstitutionWithNestedInsideZKSubstitutionBracesBecomeUnbalanced() throws Exception {
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+        when(dataBuilder.forPath("/fabric/registry/containers/config/pickle/ip"))
+                .thenReturn("127.0.0.1".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${zk:/fabric/registry/containers/config/" +
+                "${groovy:'{pickle}'.substring(1)}/ip}", "127.0.0.1");
+
+    }
+
+    @Test
+    public void testGroovySubstitutionWithClosureNestedInsideZKSubstitution() throws Exception {
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+        when(dataBuilder.forPath("/fabric/registry/containers/config/pickle/ip"))
+                .thenReturn("127.0.0.1".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${zk:/fabric/registry/containers/config/" +
+                "${groovy:'PICKLE'.collect { it.toLowerCase() }.join('')}/ip}", "127.0.0.1");
+
+    }
+
+    @Test
+    public void testZKSubstitutionNestedInsideGroovySubstitution() throws Exception {
+        // evaluate zk while building a groovy expression... urgh!
+        // suppose this might be useful if you want to load a function name
+        // or even groovy code from ZK... but you'd have to be a bit crazy...
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+        when(dataBuilder.forPath("/fabric/registry/containers/config/root/ip"))
+                .thenReturn("PICKLE".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${groovy:'${zk:/fabric/registry/containers/config/root/ip}'.equals('PICKLE')}","true");
+    }
+
+
+
+
+    @Test
     public void testGroovySubstitution() {
         curator = new MockCuratorFramework();
 //        assertExpression("${groovy:([1,2,3,4])}","[1, 2, 3, 4]",false);
-        assertExpression("${groovy:([1,2,3,4].findAll { it % 2 == 0 \\})}","[2, 4]",false);
-//        assertExpression("${groovy:([1,2,3,4].findAll { it % 2 == 0 })}","[2, 4]",false);
+//        assertExpression("${groovy:([1,2,3,4].findAll { it % 2 == 0 \\})}","[2, 4]",false);
+        assertExpression("${groovy:([1,2,3,4].findAll { it % 2 == 0 })}","[2, 4]",false);
 
     }
 
