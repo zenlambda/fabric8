@@ -133,6 +133,24 @@ public class JolokiaAgentHelperSubstituteTest {
     }
 
     @Test
+    public void testNestedZKSubstitutionWithJsonNode() throws Exception {
+        curator = mock(CuratorFramework.class);
+        GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
+        // perhaps not real use case, but nodes are likely to spit out json
+        // so you don't want it to fail weird
+        when(dataBuilder.forPath("/fabric/registry/clusters/foo/myfoo/master"))
+                .thenReturn("{ \"id\" : \"foo\", \"services\" : [ \"bar\", \"baz\"]}".getBytes());
+        when(dataBuilder.forPath("/fabric/registry/containers/" +
+                "{ \"id\" : \"foo\", \"services\" : [ \"bar\", \"baz\"]}/config/ip"))
+                .thenReturn("127.0.0.1".getBytes());
+        when(curator.getData()).thenReturn(dataBuilder);
+
+        assertExpression("${zk:/fabric/registry/containers/" +
+                "${zk:/fabric/registry/clusters/foo/myfoo/master}" +
+                "/config/ip}", "127.0.0.1");
+    }
+
+    @Test
     public void testGroovySubstitutionNestedInsideZKSubstitution() throws Exception {
         curator = mock(CuratorFramework.class);
         GetDataBuilder dataBuilder = mock(GetDataBuilder.class);
