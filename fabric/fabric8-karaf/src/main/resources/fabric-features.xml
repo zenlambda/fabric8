@@ -133,6 +133,8 @@
 
     <feature name="fabric-zookeeper" version="${project.version}" resolver="(obr)">
         <feature>fabric-core</feature>
+        <bundle dependency="true">mvn:com.jayway.jsonpath/json-path/${json.path.version}</bundle>
+        <bundle dependency="true">mvn:net.minidev/json-smart/${json.smart.version}</bundle>
     </feature>
 
     <feature name="fabric-configadmin" version="${project.version}" resolver="(obr)">
@@ -151,7 +153,6 @@
         <bundle dependency="true">mvn:org.ops4j.pax.url/pax-url-wrap/${pax.url.version}/jar/uber</bundle>
         <bundle dependency="true">mvn:org.apache.felix/org.apache.felix.metatype/${felix-metatype-version}</bundle>
         <bundle>mvn:org.apache.karaf.features/org.apache.karaf.features.command/${karaf-version}</bundle>
-        <bundle>mvn:io.fabric8/fabric-agent-commands/${project.version}</bundle>
     </feature>
 
     <feature name="fabric-archetype-commands" version="${project.version}" resolver="(obr)">

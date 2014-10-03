@@ -15,12 +15,18 @@
  */
 package io.fabric8.zookeeper.utils;
 
+import com.jayway.jsonpath.JsonPath;
 import io.fabric8.common.util.Strings;
+import io.fabric8.common.util.json.JsonReader;
+import io.fabric8.common.util.json.JsonWriter;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.utils.ZKPaths;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +50,46 @@ public class ZooKeeperFacade {
             String text = getStringData(path);
             if (Strings.isNotBlank(text)) {
                 answer.add(text);
+            }
+        }
+        return answer;
+    }
+
+    public Object extractDescendantStringDataAsObject(String pattern, String jsonPathExpr) throws Exception {
+        List<String> paths = matchingDescendants(pattern);
+        List<Object> descendants = new ArrayList<Object>();
+        for (String path : paths) {
+            String text = getStringData(path);
+            if (Strings.isNotBlank(text)) {
+                try {
+                    Object dataObject=JsonReader.read(new StringReader(text));
+                    descendants.add(dataObject);
+                } catch(IOException e) {
+                    // assume this was not json
+                    descendants.add(text);
+                }
+            }
+        }
+        StringWriter writer = new StringWriter();
+        JsonWriter.write(writer, descendants);
+        Object answer = JsonPath.read(writer.toString(),jsonPathExpr);
+
+        return answer;
+    }
+
+    public Object matchingDescendantStringDataAsObject(String pattern) throws Exception {
+        List<String> paths = matchingDescendants(pattern);
+        List<Object> answer = new ArrayList<Object>();
+        for (String path : paths) {
+            String text = getStringData(path);
+            if (Strings.isNotBlank(text)) {
+                try {
+                    Object dataObject=JsonReader.read(new StringReader(text));
+                    answer.add(dataObject);
+                } catch(IOException e) {
+                   // assume this was not json
+                   answer.add(text);
+                }
             }
         }
         return answer;
