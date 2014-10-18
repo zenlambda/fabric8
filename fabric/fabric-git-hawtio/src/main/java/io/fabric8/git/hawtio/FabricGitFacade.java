@@ -273,6 +273,10 @@ public final class FabricGitFacade extends GitFacadeSupport implements Validatab
     }
 
     @Override
+    public void uploadFile(String branch, String path, boolean unzip, String sourceFileName, String destName) throws IOException, GitAPIException {
+    }
+
+    @Override
     public String getHEAD() {
         assertValid();
         return gitReadOperation(new GitOperation<String>() {
